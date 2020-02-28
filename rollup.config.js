@@ -3,9 +3,13 @@ import commonjs from 'rollup-plugin-commonjs'
 import external from 'rollup-plugin-peer-deps-external'
 import resolve from 'rollup-plugin-node-resolve'
 import { sizeSnapshot } from 'rollup-plugin-size-snapshot'
+import { uglify } from 'rollup-plugin-uglify'
 import size from 'rollup-plugin-size'
 import pkg from './package.json'
 
+const globals = {
+  react: 'React',
+}
 export default [
   {
     input: 'src/index.js',
@@ -46,5 +50,17 @@ export default [
       }),
       sizeSnapshot(),
     ],
+  },
+  {
+    input: 'src/index.js',
+    output: {
+      file: 'dist/react-table.min.js',
+      name: 'ReactTable',
+      format: 'umd',
+      sourcemap: true,
+      globals,
+      exports: 'named',
+    },
+    plugins: [external(), babel(), sizeSnapshot(), uglify()],
   },
 ]
